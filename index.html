@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>New Year Virtual Gift ✨</title>
+  <style>
+    :root{
+      --pink:#f7c6d9;
+      --pink-soft:#fde7ef;
+      --blue:#cfe6ff;
+      --blue-soft:#eaf3ff;
+      --ink:#2f3550;
+      --muted:#6b7a99;
+      --white:#ffffff;
+      --shadow:0 20px 40px rgba(0,0,0,.12);
+      --radius:20px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: linear-gradient(135deg, var(--pink-soft), var(--blue-soft));
+      color: var(--ink);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    /* subtle floating sparkles */
+    .sparkles{position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;}
+    .sparkle{
+      position:absolute;
+      width:10px; height:10px;
+      border-radius:999px;
+      background: radial-gradient(circle at 80% 80%, rgba(255,255,255,.95), rgba(255,255,255,0));
+      opacity:.65;
+      animation: floatUp linear infinite;
+    }
+    @keyframes floatUp{
+      0%{transform: translateY(30px) scale(.9); opacity:0}
+      10%{opacity:.65}
+      100%{transform: translateY(-120vh) scale(1.25); opacity:0}
+    }
+
+    /* ===== VISIBLE FLOATING BUBBLES ===== */
+.bubbles{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.bubble{
+  position:absolute;
+  bottom:-150px;
+  left: var(--x);
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+
+  /* glossy bubble look */
+  background:
+    radial-gradient(circle at 28% 28%,
+      rgba(132, 149, 248, 0.95),
+      rgba(141, 170, 252, 0.55) 30%,
+      rgba(101, 94, 192, 0.25) 55%,
+      rgba(12, 13, 82, 0.08) 70%),
+    linear-gradient(135deg,
+      rgba(91, 66, 201, 0.35),
+      rgba(207,230,255,.4));
+
+  border: 1px solid rgba(255,255,255,.55);
+
+  box-shadow:
+    inset 0 0 20px rgba(255,255,255,.6),
+    0 20px 45px rgba(207,230,255,.35);
+
+  opacity: var(--o);
+  filter: blur(.15px);
+
+  animation: bubbleFloat var(--d) linear infinite;
+}
+
+@keyframes bubbleFloat{
+  from{
+    transform: translateY(0) translateX(0) scale(1);
+  }
+  to{
+    transform: translateY(-130vh) translateX(var(--dx)) scale(1.1);
+  }
+}
+
+
+
+    /* confetti canvas sits on top when firing */
+    #confetti{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index: 60;
+    }
+
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px 18px 60px;
+      position:relative;
+      z-index:1;
+    }
+
+    h1,h2{margin:0}
+
+    .card{
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    .center{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:70vh;
+    }
+
+    .lock{
+      max-width: 460px;
+      width:100%;
+      text-align:center;
+    }
+
+    .lock h1{
+      font-size:28px;
+      margin-bottom:8px;
+    }
+
+    .lock p{
+      color: var(--muted);
+      margin-bottom:18px;
+    }
+
+    .passcode{
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      margin-bottom:14px;
+    }
+
+    .passcode input{
+      width:56px;
+      height:64px;
+      text-align:center;
+      font-size:24px;
+      border-radius:14px;
+      border:1px solid #e3e7f2;
+      background:#fff;
+      outline:none;
+    }
+
+    .passcode input:focus{
+      border-color: var(--pink);
+      box-shadow: 0 0 0 3px rgba(247,198,217,.35);
+    }
+
+    .error{
+      min-height:18px;
+      color:#d34b6a;
+      font-weight:700;
+      font-size:14px;
+      margin-bottom: 10px;
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      align-items:center;
+      margin-top: 6px;
+    }
+
+    .btn{
+      border:none;
+      border-radius:999px;
+      padding:14px 22px;
+      font-size:15px;
+      font-weight:800;
+      cursor:pointer;
+      background: linear-gradient(135deg, var(--pink), var(--blue));
+      color: var(--ink);
+      box-shadow: var(--shadow);
+      transition: transform .12s ease, filter .12s ease;
+      user-select:none;
+    }
+    .btn:hover{filter:brightness(1.03)}
+    .btn:active{transform: translateY(1px)}
+
+    .btn.secondary{
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(47,53,80,.12);
+    }
+
+    .tiny{
+      font-size:12px;
+      color: var(--muted);
+    }
+
+    /* cute pulsating heart badge */
+    .heartBadge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(47,53,80,.10);
+      box-shadow: 0 12px 24px rgba(0,0,0,.08);
+    }
+    .heart{
+      width:14px;
+      height:14px;
+      display:inline-block;
+      transform: rotate(45deg);
+      background: rgba(247,198,217,.95);
+      position:relative;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+    .heart:before, .heart:after{
+      content:"";
+      width:14px; height:14px;
+      background: rgba(247,198,217,.95);
+      border-radius:50%;
+      position:absolute;
+    }
+    .heart:before{left:-7px; top:0}
+    .heart:after{left:0; top:-7px}
+    @keyframes pulse{
+      0%,100%{transform: rotate(45deg) scale(1)}
+      50%{transform: rotate(45deg) scale(1.22)}
+    }
+
+    /* ALBUM */
+    .album{display:none;}
+
+    .album-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* bigger photos */
+      gap:16px;
+      margin-top:20px;
+    }
+    @media (max-width:520px){
+      .album-grid{grid-template-columns:1fr;}
+    }
+
+    .photo{
+      aspect-ratio: 4 / 3;
+      background: linear-gradient(135deg, var(--pink), var(--blue));
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      animation: pop .55s ease forwards;
+      cursor: zoom-in;
+      position:relative;
+    }
+    .photo::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0));
+      opacity:0;
+      transition: opacity .2s ease;
+      pointer-events:none;
+    }
+    .photo:hover::after{opacity:1}
+    .photo img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      transition: transform .35s ease;
+    }
+    .photo:hover img{transform: scale(1.04)}
+
+    @keyframes pop{
+      from{transform:translateY(8px) scale(.96); opacity:0}
+      to{transform:translateY(0) scale(1); opacity:1}
+    }
+
+    .album-actions{
+      margin-top:26px;
+      text-align:center;
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+
+    /* MESSAGE */
+    .message{display:none; position:relative;}
+
+    .envelope{
+      width:100%;
+      max-width:560px;
+      margin:40px auto 0;
+      position:relative;
+      animation: rise .8s ease forwards;
+    }
+
+    @keyframes rise{
+      from{transform:translateY(40px); opacity:0}
+      to{transform:translateY(0); opacity:1}
+    }
+
+    .env-flap{
+      height:0;
+      border-left: 280px solid transparent;
+      border-right: 280px solid transparent;
+      border-bottom: 160px solid var(--pink);
+      margin:0 auto;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.08));
+      animation: flap 1.1s ease .15s both;
+      transform-origin: top;
+    }
+    @keyframes flap{
+      0%{transform: rotateX(0deg)}
+      60%{transform: rotateX(28deg)}
+      100%{transform: rotateX(14deg)}
+    }
+
+    .env-body{
+      background: var(--white);
+      border-radius: 0 0 18px 18px;
+      padding:28px;
+      box-shadow: var(--shadow);
+    }
+
+    .env-letter{
+      background: linear-gradient(180deg, #fff, #fffafc);
+      border-radius:14px;
+      padding:22px;
+      color: var(--ink);
+      line-height:1.8;
+      font-size:15px;
+      min-height: 180px;
+    }
+
+    .typing{
+      white-space: pre-wrap;
+    }
+    .cursor{
+      display:inline-block;
+      width:10px;
+      margin-left:2px;
+      background: rgba(47,53,80,.35);
+      transform: translateY(2px);
+      height: 16px;
+      border-radius: 2px;
+      animation: blink .9s steps(2) infinite;
+    }
+    @keyframes blink{50%{opacity:0}}
+
+    .back{
+      margin-top:20px;
+      text-align:center;
+    }
+
+    .back button{
+      background:none;
+      border:none;
+      color: var(--muted);
+      font-weight:900;
+      cursor:pointer;
+      font-size:14px;
+    }
+
+    footer{
+      text-align:center;
+      margin-top:30px;
+      font-size:12px;
+      color: var(--muted);
+    }
+
+    /* LIGHTBOX (enlarge photos) */
+    .lightbox{
+      position:fixed;
+      inset:0;
+      background: rgba(20,24,40,.55);
+      backdrop-filter: blur(10px);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      z-index: 70;
+    }
+    .lightbox.show{display:flex}
+    .lightbox-card{
+      width: min(980px, 96vw);
+      background: rgba(255,255,255,.86);
+      border: 1px solid rgba(255,255,255,.6);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .lightbox-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 10px 12px;
+      color: var(--muted);
+      font-size: 13px;
+      background: rgba(255,255,255,.55);
+    }
+    .lb-actions{display:flex; gap:8px; align-items:center}
+    .icon-btn{
+      border:none;
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: linear-gradient(135deg, rgba(247,198,217,.9), rgba(207,230,255,.9));
+      color: var(--ink);
+      font-weight:900;
+      cursor:pointer;
+    }
+    .lightbox-img{
+      width:100%;
+      max-height: 78vh;
+      object-fit: contain;
+      display:block;
+      background: rgba(255,255,255,.45);
+    }
+
+    /* ===== Responsive envelope on mobile ===== */
+@media (max-width: 520px){
+
+  .envelope{
+    max-width: 92vw;
+    margin: 18px auto 0;
+  }
+
+  .env-flap{
+    width: 92vw;
+    margin: 0 auto;
+
+    border-left: 46vw solid transparent;
+    border-right: 46vw solid transparent;
+    border-bottom: 26vw solid var(--pink);
+
+    filter: drop-shadow(0 8px 14px rgba(0,0,0,.08));
+  }
+
+  .env-body{
+    width: 92vw;
+    margin: 0 auto;
+    padding: 14px;
+  }
+
+  .env-letter{
+    padding: 16px;
+    font-size: 14px;
+    line-height: 1.75;
+    border-radius: 14px;
+  }
+}
+  </style>
+</head>
+
+<body>
+  <div class="sparkles" id="sparkles"></div>
+  <div class="bubbles" id="bubbles"></div>
+  <canvas id="confetti"></canvas>
+
+  <div class="wrap">
+
+    <!-- PASSCODE -->
+    <div class="center" id="lockScreen">
+      <div class="card lock">
+        <h1>Specially for T ✨</h1>
+        <p>Enter the 4-digit passcode to open this little surprise.</p>
+        <span class="tiny">Hint: special date for us:D </span>
+
+        <div class="passcode">
+          <input maxlength="1" inputmode="numeric" />
+          <input maxlength="1" inputmode="numeric" />
+          <input maxlength="1" inputmode="numeric" />
+          <input maxlength="1" inputmode="numeric" />
+        </div>
+
+        <div class="error" id="error"></div>
+
+        
+        <div class="tiny" style="margin-top:8px" id="musicHint">(Made with Love)</div>
+      </div>
+    </div>
+
+    <!-- ALBUM -->
+<div class="album" id="album">
+  <div class="card">
+
+    <!-- TOP: BIG CENTRED OPEN MESSAGE -->
+    <div class="album-header-center">
+      <button class="btn btn-hero" id="openMessage" type="button">
+        Open message ✉️
+      </button>
+
+      <div class="heartBadge" title="Happy New Year">
+        <span class="heart"></span>
+      </div>
+    </div>
+
+    <!-- TITLE -->
+    <div style="text-align:center; margin-top:22px;">
+      <h2>Our Little Moments 📸</h2>
+      <p style="color:var(--muted); margin:6px 0 0">
+        Some memories to start the new year gently.
+      </p>
+    </div>
+
+    <!-- ALBUM GRID -->
+    <div class="album-grid" id="albumGrid"></div>
+
+    <!-- OPTIONAL: KEEP MUSIC CONTROL AT BOTTOM -->
+    <div class="album-actions">
+      <button class="btn secondary" id="musicBtn2" type="button">
+        Play / Pause music ♡
+      </button>
+    </div>
+
+  </div>
+</div>
+    <!-- MESSAGE -->
+    <div class="message" id="message">
+      <div class="envelope">
+        <div class="env-flap"></div>
+        <div class="env-body">
+          <div class="env-letter">
+            <div class="typing" id="typingTarget"></div><span class="cursor" id="cursor"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="back">
+        <button id="backToAlbum" type="button">← Back to album</button>
+      </div>
+    </div>
+
+    <footer>I made this for T only hehe </footer>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <div class="lightbox-card">
+      <div class="lightbox-top">
+        <div id="lbCounter">1 / 10</div>
+        <div class="lb-actions">
+          <button class="icon-btn" id="prevBtn" type="button" title="Previous">←</button>
+          <button class="icon-btn" id="nextBtn" type="button" title="Next">→</button>
+          <button class="icon-btn" id="closeBtn" type="button" title="Close">Close ✕</button>
+        </div>
+      </div>
+      <img class="lightbox-img" id="lbImg" alt="Enlarged photo" />
+    </div>
+  </div>
+
+  <script>
+    const PASSCODE = "2605";
+
+    // ---------- BGM ----------
+    // Put an MP3 named bgm.mp3 in the same folder (or change this to a URL)
+    const BGM_SRC = "bgm.mp3";
+    const audio = new Audio(BGM_SRC);
+    audio.loop = true;
+    audio.volume = 0.55;
+
+    const musicBtn = document.getElementById('musicBtn');
+    const musicBtn2 = document.getElementById('musicBtn2');
+    const musicHint = document.getElementById('musicHint');
+
+    async function toggleMusic(){
+      try{
+        if(audio.paused){
+          await audio.play();
+          if(musicBtn) musicBtn.textContent = "Pause music ♡";
+          if(musicBtn2) musicBtn2.textContent = "Pause music ♡";
+          if(musicHint) musicHint.textContent = "";
+        }else{
+          audio.pause();
+          if(musicBtn) musicBtn.textContent = "Play romantic music ♡";
+          if(musicBtn2) musicBtn2.textContent = "Play/Pause music ♡";
+        }
+      }catch(e){
+        if(musicHint) musicHint.textContent = "If it doesn't play, tap again.";
+      }
+    }
+    musicBtn?.addEventListener('click', toggleMusic);
+    musicBtn2?.addEventListener('click', toggleMusic);
+
+    // ---------- Sparkles ----------
+    const sparkles = document.getElementById('sparkles');
+    function spawnSparkles(){
+      const count = 28;
+      for(let i=0;i<count;i++){
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        const left = Math.random()*100;
+        const size = 6 + Math.random()*10;
+        const dur = 10 + Math.random()*14;
+        const delay = Math.random()*6;
+        s.style.left = left + 'vw';
+        s.style.bottom = (-10 - Math.random()*30) + 'px';
+        s.style.width = size + 'px';
+        s.style.height = size + 'px';
+        s.style.animationDuration = dur + 's';
+        s.style.animationDelay = delay + 's';
+        s.style.opacity = (0.35 + Math.random()*0.5).toFixed(2);
+        sparkles.appendChild(s);
+      }
+    }
+    spawnSparkles();
+
+    // ---------- Confetti ----------
+    const confettiCanvas = document.getElementById('confetti');
+    const cctx = confettiCanvas.getContext('2d');
+    function resizeConfetti(){
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeConfetti);
+    resizeConfetti();
+
+    let confettiPieces = [];
+    let confettiRAF = null;
+
+    function fireConfetti(){
+      const w = confettiCanvas.width, h = confettiCanvas.height;
+      const count = 180;
+      confettiPieces = [];
+      for(let i=0;i<count;i++){
+        confettiPieces.push({
+          x: Math.random()*w,
+          y: -20 - Math.random()*h*0.2,
+          r: 4 + Math.random()*6,
+          vx: -2 + Math.random()*4,
+          vy: 3 + Math.random()*6,
+          rot: Math.random()*Math.PI,
+          vr: -0.15 + Math.random()*0.3,
+          life: 240 + Math.random()*80,
+          kind: Math.random() < 0.5 ? 'rect' : 'heart'
+        });
+      }
+      animateConfetti();
+    }
+
+    function drawHeart(ctx, x, y, s){
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(s, s);
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(-1.2, -1.2, -3, -0.2, -3, 1.4);
+      ctx.bezierCurveTo(-3, 3.2, -1.1, 4.2, 0, 5.4);
+      ctx.bezierCurveTo(1.1, 4.2, 3, 3.2, 3, 1.4);
+      ctx.bezierCurveTo(3, -0.2, 1.2, -1.2, 0, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function animateConfetti(){
+      if(confettiRAF) cancelAnimationFrame(confettiRAF);
+      const w = confettiCanvas.width, h = confettiCanvas.height;
+
+      function frame(){
+        cctx.clearRect(0,0,w,h);
+
+        confettiPieces.forEach(p=>{
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += p.vr;
+          p.vy += 0.03;      // gravity
+          p.life -= 1;
+
+          cctx.save();
+          cctx.globalAlpha = Math.max(0, Math.min(1, p.life/260));
+          cctx.translate(p.x, p.y);
+          cctx.rotate(p.rot);
+
+          // pastel gradient colour
+          const g = cctx.createLinearGradient(-p.r,0,p.r,0);
+          g.addColorStop(0, "rgba(247,198,217,.95)");
+          g.addColorStop(1, "rgba(207,230,255,.95)");
+          cctx.fillStyle = g;
+
+          if(p.kind === 'rect'){
+            cctx.fillRect(-p.r, -p.r/2, p.r*1.6, p.r);
+          }else{
+            drawHeart(cctx, 0, -2, 2.2);
+          }
+
+          cctx.restore();
+        });
+
+        confettiPieces = confettiPieces.filter(p => p.life > 0 && p.y < h + 60);
+        if(confettiPieces.length){
+          confettiRAF = requestAnimationFrame(frame);
+        }else{
+          cctx.clearRect(0,0,w,h);
+        }
+      }
+      frame();
+    }
+
+    // ===== FLOATING BUBBLES =====
+const bubbles = document.getElementById('bubbles');
+
+function spawnBubbles(){
+  const COUNT = 16; // visible but not crowded
+
+  for(let i=0;i<COUNT;i++){
+    const b = document.createElement('div');
+    b.className = 'bubble';
+
+    const size = 60 + Math.random()*90;          // big enough to see
+    const x = Math.random()*100;                 // vw
+    const duration = 18 + Math.random()*20;      // slow movement
+    const delay = Math.random()*10;
+    const drift = (-80 + Math.random()*160);     // side movement
+    const opacity = (0.45 + Math.random()*0.25).toFixed(2);
+
+    b.style.setProperty('--s', size + 'px');
+    b.style.setProperty('--x', x + 'vw');
+    b.style.setProperty('--d', duration + 's');
+    b.style.setProperty('--dx', drift + 'px');
+    b.style.setProperty('--o', opacity);
+    b.style.animationDelay = delay + 's';
+
+    bubbles.appendChild(b);
+  }
+}
+
+spawnBubbles();
+
+    // ---------- Data / DOM ----------
+    const inputs = document.querySelectorAll('.passcode input');
+    const error = document.getElementById('error');
+    const lockScreen = document.getElementById('lockScreen');
+    const album = document.getElementById('album');
+    const albumGrid = document.getElementById('albumGrid');
+    const message = document.getElementById('message');
+
+    // 12 photos (dynamic). Replace with your own links / filenames.
+    const photos = [
+  "./images/1.jpg",
+  "./images/2.jpg",
+  "./images/3.jpg",
+  "./images/4.jpg",
+  "./images/5.jpg",
+  "./images/6.jpg",
+  "./images/7.jpg",
+  "./images/8.jpg",
+  "./images/9.jpg",
+  "./images/10.jpg",
+  "./images/11.jpg",
+  "./images/12.jpg"
+];
+
+    // ---------- Lightbox ----------
+    const lightbox = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lbImg');
+    const lbCounter = document.getElementById('lbCounter');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const closeBtn = document.getElementById('closeBtn');
+    let currentIndex = 0;
+
+    function openLightbox(index){
+      currentIndex = index;
+      updateLightbox();
+      lightbox.classList.add('show');
+      lightbox.setAttribute('aria-hidden','false');
+    }
+    function closeLightbox(){
+      lightbox.classList.remove('show');
+      lightbox.setAttribute('aria-hidden','true');
+    }
+    function updateLightbox(){
+  lbImg.src = photos[currentIndex];
+  lbCounter.textContent = `${currentIndex + 1} / ${photos.length}`;
+}
+    function prev(){ currentIndex = (currentIndex - 1 + photos.length) % photos.length; updateLightbox(); }
+    function next(){ currentIndex = (currentIndex + 1) % photos.length; updateLightbox(); }
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+    closeBtn.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e)=>{ if(e.target === lightbox) closeLightbox(); });
+
+    window.addEventListener('keydown', (e)=>{
+      if(!lightbox.classList.contains('show')) return;
+      if(e.key === 'Escape') closeLightbox();
+      if(e.key === 'ArrowLeft') prev();
+      if(e.key === 'ArrowRight') next();
+    });
+
+    // ---------- Passcode UX ----------
+    inputs.forEach((input, idx) => {
+      input.addEventListener('input', () => {
+        input.value = (input.value || '').replace(/[^0-9]/g,'').slice(0,1);
+        if(input.value && idx < inputs.length-1){
+          inputs[idx+1].focus();
+        }
+        checkCode();
+      });
+
+      input.addEventListener('keydown', (e)=>{
+        if(e.key === 'Backspace' && !input.value && idx > 0){
+          inputs[idx-1].focus();
+        }
+      });
+    });
+
+    function checkCode(){
+      const code = [...inputs].map(i=>i.value).join('');
+      if(code.length === 4){
+        if(code === PASSCODE){
+          unlock();
+        }else{
+          error.textContent = 'Wrong passcode. Try again.';
+          inputs.forEach(i=>i.value='');
+          inputs[0].focus();
+        }
+      }
+    }
+
+    function unlock(){
+      lockScreen.style.display='none';
+      album.style.display='block';
+      loadAlbum();
+
+      // confetti moment
+      fireConfetti();
+
+      // try to start music (some browsers still require a tap)
+      toggleMusic();
+    }
+
+   function loadAlbum(){
+  albumGrid.innerHTML = '';
+  photos.forEach((p, idx) => {
+    const div = document.createElement('div');
+    div.className = 'photo';
+    div.innerHTML = `<img src="${p}" alt="Memory ${idx+1}">`;
+    div.addEventListener('click', () => openLightbox(idx));
+    albumGrid.appendChild(div);
+  });
+}
+
+    // ---------- Typing animation for letter ----------
+    const typingTarget = document.getElementById('typingTarget');
+    const cursor = document.getElementById('cursor');
+
+    const letterText =
+`Hi T,
+
+I know this year hasn’t been an easy one for us, whether we call what we have platonic or romantic.
+
+Honestly, when you said you’d stopped trying because you felt like I wasn’t trying, it really broke my heart. I don’t even know what I was truly expecting from our relationship. Like I’ve told you before, I care about you, I love you in my own way. And when I felt like I’d already tried my best, only to realise it still wasn’t enough for you. It hurt more than I knew how to explain.
+
+While working on this little last-minute project, I felt strangely happy looking through all the photos and remembering everything we’ve done together. Maybe you’re right, maybe I didn’t try hard enough. Maybe I’m just someone who gets comfortable and hopes that comfort can stay the same forever. I’m sorry if, as your romantic partner, I couldn’t give you the happiness you deserved.
+
+But there’s something important you should know. I’m genuinely grateful that I got to know you back in 2024. It hasn’t actually been that long, yet somehow here we are, stepping into 2026 after everything we’ve been through. Even though it was hard, even though we struggled to hold on to each other, it makes me happy knowing that we did try, that we both fought in our own ways.
+
+Sorry if this is turning into a ramble. There’s still so much I want to say, but if there’s one thing I really want you to know, it’s how thankful I am for you, for staying by my side all this time. Even with all my weird behaviour, my bad sides, my flaws. Sometimes it feels like the only person who truly stands on my side is you.
+
+In 2026, no matter what our status becomes, whether we’re friends or something more, I hope we can continue choosing each other, in whatever way makes sense for us. I don’t want to lose you from my life. I know this sounds cliché and I’ve probably said it many times, but it’s true: you bring out my worst sides, yet you also make me the happiest. Every moment I spend with you makes me feel alive, laughing freely, being fully myself.
+
+Writing this is making me incredibly emotional. Thinking about everything that’s happened lately, I can’t stop the tears, from sadness, gratitude, happiness, all mixed into one.
+
+So… thank you, T. For being here. For staying. For trying.
+Happy New Year. I hope 2026 is kinder to you, lighter on your heart, and filled with moments that remind you how loved and appreciated you are. No matter what happens next, you’ll always mean something very special to me.
+
+Xoxo
+K`;
+
+    let typeTimer = null;
+    function typeLetter(text, speed=22){
+      if(typeTimer) clearInterval(typeTimer);
+      typingTarget.textContent = "";
+      cursor.style.display = "inline-block";
+
+      let i = 0;
+      typeTimer = setInterval(()=>{
+        typingTarget.textContent += text[i] || "";
+        i++;
+        if(i >= text.length){
+          clearInterval(typeTimer);
+          typeTimer = null;
+          // keep cursor blinking for cuteness
+          setTimeout(()=>{ cursor.style.display = "none"; }, 900);
+        }
+      }, speed);
+    }
+
+    document.getElementById('openMessage').onclick = ()=>{
+      album.style.display='none';
+      message.style.display='block';
+
+      // confetti + typing when opening the letter
+      fireConfetti();
+      typeLetter(letterText, 20);
+    };
+
+    document.getElementById('backToAlbum').onclick = ()=>{
+      message.style.display='none';
+      album.style.display='block';
+    };
+
+    inputs[0].focus();
+
+  </script>
+</body>
+</html>
